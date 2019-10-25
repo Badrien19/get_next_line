@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:24:24 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/24 18:23:56 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/25 17:06:47 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,15 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define BUFFER_SIZE 150
+#define BUFFER_SIZE 1
 
 int		find(const char *str, int c);
-int		ft_strlcpy(char *dest, const char *src, unsigned int size);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 int		ft_strlen(char *chaine);
 char	*ft_strjoin(char const *s1, char const *s2);

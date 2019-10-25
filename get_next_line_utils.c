@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/23 12:26:45 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/24 18:15:54 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/25 14:17:00 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,29 +26,7 @@ int		find(const char *str, int c)
 		else
 			i--;
 	}
-	return (0);
-}
-
-int	ft_strlcpy(char *dest, const char *src, unsigned int size)
-{
-	int i;
-	int b;
-
-	i = 0;
-	b = 0;
-	if (dest == NULL || src == NULL)
-		return (0);
-	while (src[b] != '\0')
-		b++;
-	if (size == 0)
-		return (b);
-	while (src[i] != '\0' && i < size - 1)
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (b);
+	return (-1);
 }
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)

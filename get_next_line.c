@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:21:22 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/24 18:30:25 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/25 17:25:41 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,41 +51,52 @@ char *line_cut(char *line)
 		i++;
 	}
 	s[i] = '\0';
-	printf("S = %s\n", s);
 	return(s);
 }
 
+/*
+**	1 : A line has been read
+**	0 : Did not read anything
+**	-1 : An error happened
+*/
+
 int get_next_line(int fd, char **line)
 {
-	static char *rest;
+	static char *rest[OPEN_MAX];
 	char buf[BUFFER_SIZE + 1];
 	int ret;
 
-	// rest au debut de line puis couper la line
-	// et si plusieurs \n je strndup a partir du premier \n pour le 'rest'
+	if(line == NULL || fd > OPEN_MAX || fd < 0 || BUFFER_SIZE < 0)
+		return (-1);
 
+	*line = NULL;
+
+	if(rest[fd] != NULL)
+	{
+		if(ft_strlen(rest[fd]) != 0)
+		{
+			free(*line);
+			*line = ft_strjoin(*line, rest[fd]);
+			if(find(*line, '\n') != -1) // on trouve un /n
+			{
+				rest[fd] = get_rest(*line);
+				*line = line_cut(*line);
+				return (1);
+			}
+		}
+	}
 	while((ret = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
 		*line = ft_strjoin(*line, buf);
-		if(find(*line, '\n') != 0)
+		if(find(*line, '\n') != -1)
 		{
-			rest = get_rest(buf);
+			rest[fd] = get_rest(buf);
 			*line = line_cut(*line);
-			break;
+			return(1);
 		}
 	}
-	printf("line = %s\n\n", *line);
-	printf("rest = %s\n\n", rest);
-	return (0);
-}
-
-int main()
-{
-	int fd = open("test.txt", O_RDONLY);
-	char **line;
-
-	get_next_line(fd, line);
-
-	return (0);
+	if(ft_strlen(*line))
+		return (1);
+	return (ret < 0 ? -1 : 0);
 }
