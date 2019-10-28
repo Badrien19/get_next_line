@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/23 12:26:45 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/25 14:17:00 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/28 10:33:28 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	i = ft_strlen((char *)s1);
 	if (!(ret = (char *)malloc(sizeof(char) * (i + ft_strlen((char*)s2) + 1))))
 		return (0);
-	if(s1 == NULL)
+	if (s1 == NULL)
 		ft_memcpy(ret, s2, ft_strlen((char*)s2) + 1);
 	else
 	{
@@ -64,14 +64,14 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (ret);
 }
 
-int	ft_strlen(char *chaine)
+int		ft_strlen(char *chaine)
 {
 	int i;
 
 	if (chaine == NULL)
 		return (0);
 	i = 0;
-	while (chaine[i] != '\0') //&& chaine[i] != '\n')
+	while (chaine[i] != '\0')
 		i++;
 	return (i);
 }

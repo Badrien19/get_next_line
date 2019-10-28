@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:21:22 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/25 18:01:55 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/28 10:57:02 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ char	*get_rest(char *buf)
 	i++;
 	while (buf[i + j] != '\0')
 		j++;
-	s = malloc(sizeof(char) * (j + 1)); // a protger
+	if (!(s = malloc(sizeof(char) * (j + 1))))
+		return (0);
 	j = 0;
 	while (buf[i + j] != '\0')
 	{
@@ -44,7 +45,8 @@ char	*line_cut(char *line)
 	i = 0;
 	while (line[i] != '\n')
 		i++;
-	s = malloc(sizeof(char) * (i + 1));
+	if (!(s = malloc(sizeof(char) * (i + 1))))
+		return (0);
 	i = 0;
 	while (line[i] != '\n')
 	{
@@ -52,20 +54,18 @@ char	*line_cut(char *line)
 		i++;
 	}
 	s[i] = '\0';
+	free(*line);
 	return (s);
 }
 
-int		line_cutter(char **rest, char **line, char buf[BUFFER_SIZE + 1])
+int		mk_line_great_again(char **rest, char **line, char buf[BUFFER_SIZE + 1])
 {
-		*rest = get_rest(buf);
-		*line = line_cut(*line);
-		return (1);
+	if ((*rest = get_rest(buf)) == 0)
+		return (-1);
+	if ((*line = line_cut(*line)) == 0)
+		return (-1);
+	return (1);
 }
-/*
-**	1 : A line has been read
-**	0 : Did not read anything
-**	-1 : An error happened
-*/
 
 int		get_next_line(int fd, char **line)
 {
@@ -76,30 +76,20 @@ int		get_next_line(int fd, char **line)
 	if (line == NULL || fd > OPEN_MAX || fd < 0 || BUFFER_SIZE < 0)
 		return (-1);
 	*line = NULL;
-	if (rest[fd] != NULL)
-		if (ft_strlen(rest[fd]) != 0)
-		{
-			free(*line);
-			*line = ft_strjoin(*line, rest[fd]);
-			if (find(*line, '\n') != -1)
-				return(line_cutter(&rest[fd], line, buf));
-			/*{
-				rest[fd] = get_rest(*line);
-				*line = line_cut(*line);
-				return (1);
-			}*/
-		}
+	if (ft_strlen(rest[fd]) != 0)
+	{
+		if ((*line = ft_strjoin(*line, rest[fd])) == 0)
+			return (-1);
+		if (find(*line, '\n') != -1)
+			return (mk_line_great_again(&rest[fd], line, buf));
+	}
 	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
-		*line = ft_strjoin(*line, buf);
+		if ((*line = ft_strjoin(*line, buf)) == 0)
+			return (-1);
 		if (find(*line, '\n') != -1)
-			return(line_cutter(&rest[fd], line, buf));
-		/*{
-			rest[fd] = get_rest(buf);
-			*line = line_cut(*line);
-			return (1);
-		}*/
+			return (mk_line_great_again(&rest[fd], line, buf));
 	}
 	if (ft_strlen(*line))
 		return (1);
