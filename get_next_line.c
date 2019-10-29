@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:21:22 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/28 10:57:02 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/29 18:57:45 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,16 @@ char	*line_cut(char *line)
 		s[i] = line[i];
 		i++;
 	}
+	free(line);
 	s[i] = '\0';
-	free(*line);
 	return (s);
 }
 
-int		mk_line_great_again(char **rest, char **line, char buf[BUFFER_SIZE + 1])
+int		mk_line_great_again(char **rest, char **line, int fd)
 {
-	if ((*rest = get_rest(buf)) == 0)
+	if ((rest[fd] = get_rest(*line)) == NULL)
 		return (-1);
-	if ((*line = line_cut(*line)) == 0)
+	if ((*line = line_cut(*line)) == NULL)
 		return (-1);
 	return (1);
 }
@@ -81,17 +81,35 @@ int		get_next_line(int fd, char **line)
 		if ((*line = ft_strjoin(*line, rest[fd])) == 0)
 			return (-1);
 		if (find(*line, '\n') != -1)
-			return (mk_line_great_again(&rest[fd], line, buf));
+			return (mk_line_great_again(rest, line, fd));
+		free(rest[fd]);
 	}
-	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
-	{
-		buf[ret] = '\0';
+	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0
+		&& !(buf[ret] = 0))
 		if ((*line = ft_strjoin(*line, buf)) == 0)
 			return (-1);
-		if (find(*line, '\n') != -1)
-			return (mk_line_great_again(&rest[fd], line, buf));
-	}
+		else if (find(*line, '\n') != -1)
+			return (mk_line_great_again(rest, line, fd));
 	if (ft_strlen(*line))
 		return (1);
 	return (ret < 0 ? -1 : 0);
 }
+/*
+int main()
+{
+	int fd = open("test.txt", O_RDONLY);
+	char **line;
+
+	get_next_line(fd, line);
+	printf("ligne 1: (%s)\n", *line);
+	get_next_line(fd, line);
+	printf("ligne 2: (%s)\n", *line);
+	get_next_line(fd, line);
+	printf("ligne 3: (%s)\n", *line);
+	get_next_line(fd, line);
+	printf("ligne 4: (%s)\n", *line);
+	get_next_line(fd, line);
+	printf("ligne 5: (%s)\n", *line);
+
+	return (0);
+} */

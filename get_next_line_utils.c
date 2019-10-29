@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/23 12:26:45 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/28 10:33:28 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/29 18:55:52 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	unsigned int	i;
 	char			*ret;
@@ -61,6 +61,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		ft_memcpy(ret, s1, i);
 		ft_memcpy(&ret[i], s2, ft_strlen((char*)s2) + 1);
 	}
+	free(s1);
 	return (ret);
 }
 
