@@ -6,35 +6,34 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:21:22 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/29 18:57:45 by badrien          ###   ########.fr       */
+/*   Updated: 2019/10/30 10:27:38 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_rest(char *buf)
+char	*get_rest(char *line, char *rest)
 {
 	int		i;
 	int		j;
-	char	*s;
 
 	i = 0;
 	j = 0;
-	while (buf[i] != '\n')
+	while (line[i] != '\n')
 		i++;
 	i++;
-	while (buf[i + j] != '\0')
+	while (line[i + j] != '\0')
 		j++;
-	if (!(s = malloc(sizeof(char) * (j + 1))))
+	if (!(rest = malloc(sizeof(char) * (j + 1))))
 		return (0);
 	j = 0;
-	while (buf[i + j] != '\0')
+	while (line[i + j] != '\0')
 	{
-		s[j] = buf[i + j];
+		rest[j] = line[i + j];
 		j++;
 	}
-	s[j] = '\0';
-	return (s);
+	rest[j] = '\0';
+	return (rest);
 }
 
 char	*line_cut(char *line)
@@ -60,7 +59,8 @@ char	*line_cut(char *line)
 
 int		mk_line_great_again(char **rest, char **line, int fd)
 {
-	if ((rest[fd] = get_rest(*line)) == NULL)
+	free(rest[fd]);
+	if ((rest[fd] = get_rest(*line, rest[fd])) == NULL)
 		return (-1);
 	if ((*line = line_cut(*line)) == NULL)
 		return (-1);
@@ -83,6 +83,7 @@ int		get_next_line(int fd, char **line)
 		if (find(*line, '\n') != -1)
 			return (mk_line_great_again(rest, line, fd));
 		free(rest[fd]);
+		rest[fd] = NULL;
 	}
 	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0
 		&& !(buf[ret] = 0))
@@ -94,22 +95,3 @@ int		get_next_line(int fd, char **line)
 		return (1);
 	return (ret < 0 ? -1 : 0);
 }
-/*
-int main()
-{
-	int fd = open("test.txt", O_RDONLY);
-	char **line;
-
-	get_next_line(fd, line);
-	printf("ligne 1: (%s)\n", *line);
-	get_next_line(fd, line);
-	printf("ligne 2: (%s)\n", *line);
-	get_next_line(fd, line);
-	printf("ligne 3: (%s)\n", *line);
-	get_next_line(fd, line);
-	printf("ligne 4: (%s)\n", *line);
-	get_next_line(fd, line);
-	printf("ligne 5: (%s)\n", *line);
-
-	return (0);
-} */
