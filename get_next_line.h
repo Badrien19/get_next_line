@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:24:24 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/30 10:26:58 by badrien          ###   ########.fr       */
+/*   Updated: 2019/11/04 15:32:18 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,17 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
+
 int		find(const char *str, int c);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
-int		ft_strlen(char *chaine);
 char	*ft_strjoin(char *s1, char *s2);
-
-char	*ft_free_join(char *str, char *str2);
-char	*get_new_line(int fd, char **line);
+int		ft_strlen(char *chaine);
+char	*get_rest(char *line, char *rest);
+char	*line_cut(char *line);
+int		last_line(char **line);
 int		get_next_line(int fd, char **line);
 int		mk_line_great_again(char **rest, char **line, int fd);
 #endif
