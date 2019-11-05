@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/23 12:26:45 by badrien           #+#    #+#             */
-/*   Updated: 2019/10/29 18:55:52 by badrien          ###   ########.fr       */
+/*   Updated: 2019/11/05 14:58:34 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,13 @@ int		ft_strlen(char *chaine)
 	while (chaine[i] != '\0')
 		i++;
 	return (i);
+}
+
+int		last_line(char **line)
+{
+	free(*line);
+	if (!(*line = malloc(sizeof(char) * 1)))
+		return (-1);
+	*line[0] = '\0';
+	return (0);
 }

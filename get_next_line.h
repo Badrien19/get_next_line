@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:24:24 by badrien           #+#    #+#             */
-/*   Updated: 2019/11/04 15:32:18 by badrien          ###   ########.fr       */
+/*   Updated: 2019/11/05 14:51:57 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <fcntl.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+#  define BUFFER_SIZE 16
 # endif
 
 int		find(const char *str, int c);
@@ -34,5 +34,7 @@ char	*get_rest(char *line, char *rest);
 char	*line_cut(char *line);
 int		last_line(char **line);
 int		get_next_line(int fd, char **line);
-int		mk_line_great_again(char **rest, char **line, int fd);
+int		mk_line(char **rest, char **line, int fd);
+int		read_line(char **line, int fd, char *buf, char **rest);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: badrien <badrien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 11:21:22 by badrien           #+#    #+#             */
-/*   Updated: 2019/11/04 15:52:49 by badrien          ###   ########.fr       */
+/*   Updated: 2019/11/05 14:51:49 by badrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*line_cut(char *line)
 	return (s);
 }
 
-int		mk_line_great_again(char **rest, char **line, int fd)
+int		mk_line(char **rest, char **line, int fd)
 {
 	free(rest[fd]);
 	if ((rest[fd] = get_rest(*line, rest[fd])) == NULL)
@@ -67,20 +67,27 @@ int		mk_line_great_again(char **rest, char **line, int fd)
 	return (1);
 }
 
-int		last_line(char **line)
+int		read_line(char **line, int fd, char *buf, char **rest)
 {
-	free(*line);
-	if(!(*line = malloc(sizeof(char) * 1)))
-		return (-1);
-	*line[0] = '\0';
-	return (0);
+	int ret;
+
+	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
+	{
+		buf[ret] = 0;
+		if ((*line = ft_strjoin(*line, buf)) == 0)
+			return (-1);
+		if (find(*line, '\n') != -1)
+			return (mk_line(rest, line, fd));
+	}
+	if (ft_strlen(*line) == 0 && ret == 0)
+		return (last_line(line));
+	return (ret < 0 ? -1 : 0);
 }
 
 int		get_next_line(int fd, char **line)
 {
 	static char	*rest[OPEN_MAX];
 	char		buf[BUFFER_SIZE + 1];
-	int			ret;
 
 	if (line == NULL || fd > OPEN_MAX || fd < 0 || BUFFER_SIZE <= 0)
 		return (-1);
@@ -90,39 +97,9 @@ int		get_next_line(int fd, char **line)
 		if ((*line = ft_strjoin(*line, rest[fd])) == 0)
 			return (-1);
 		if (find(*line, '\n') != -1)
-			return (mk_line_great_again(rest, line, fd));
+			return (mk_line(rest, line, fd));
 		free(rest[fd]);
 		rest[fd] = NULL;
 	}
-	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0 
-			&& !(buf[ret] = 0))
-		if ((*line = ft_strjoin(*line, buf)) == 0)
-			return (-1);
-		else if (find(*line, '\n') != -1)
-			return (mk_line_great_again(rest, line, fd));
-	if (ft_strlen(*line) == 0 && ret == 0)
-		return(last_line(line));
-	return (ret < 0 ? -1 : 0);
-}
-
-int		main(void)
-{
-	char	**line;
-	int		fd = open("test2", O_RDONLY);
-	int		retur;
-	int		i;
-
-	retur = 1;
-	i = 1;
-	retur = get_next_line(fd, line);
-	while (i != 6)
-	{
-		printf("ligne %d: (%s) retour = %d\n", i, *line, retur);
-		free(*line);
-		retur = get_next_line(fd, line);
-		i++;
-	}
-	printf("Derniere ligne: (%s) retour = %d\n", *line, retur);
-	free(*line);
-	return (0);
+	return (read_line(line, fd, buf, rest));
 }
